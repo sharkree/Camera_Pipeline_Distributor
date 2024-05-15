@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Capture</title>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div class = 'video'>
+        <img id="image">
+    </div>
+
+    <div>
+        <input id="confidence_slider" type="range" min="0" max="1" step="0.01" value="0.5">
+        <output id="confidence_output"></output>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+
+        var socket = io('http://127.0.0.1:5000/', {
+            maxHttpBufferSize: 10 * 1024 * 1024
+        });
+        socket.on('connect', function(){
+            console.log("Connection has been succesfully established with socket.", socket.connected)
+        });
+
+        // Check if webcam is available
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing webcam:', error);
+            });
+
+        // Function to capture and encode image to Base64
+        function captureAndEncode() {
+            base64Image = canvas.toDataURL('image/jpg');
+            base64Image = base64Image.replace('data:image/png;base64,', '')
+            socket.emit('image', base64Image);
+        }
+
+        // Automatically capture and encode image at 15 fps
+        setInterval(captureAndEncode, 1000 / 15);
+
+        socket.on('response_back', function(image){
+            const image_id = document.getElementById('image');
+            image_id.src = image;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        });
+    </script>
+
+    <script>
+        var slider = document.getElementById("confidence_slider");
+        var output = document.getElementById("confidence_output");
+
+        // Update the current slider value (each time you drag the slider handle)
+        slider.oninput = function() {
+            var dict1 = {}; dict1['confidence'] = this.value;
+            var dict2 = {}; dict2['1'] = dict1;
+            var dict3 = {}; dict3['pipelines'] = dict2;
+
+            output.innerHTML = slider.value; // Display the default slider value
+
+            socket.emit('change_processing', JSON.stringify(dict3));
+        }
+    </script>
+</body>
+</html>

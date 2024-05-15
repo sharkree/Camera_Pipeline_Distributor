@@ -1,0 +1,73 @@
+* {
+margin:0;
+padding:0;
+}
+
+html {
+  font-size: 12px;
+  font-family: "Open Sans", sans-serif; /* this should be the rest of the output you got from Google Fonts */
+  background-color: #152238;
+}
+
+.sidebarcontainer {
+  white-space:nowrap;
+}
+
+.sidebar{
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 30px;
+  text-align: left;
+  font-size: 25px;
+  width: max(100vw, 1600px);
+  height: 15%;
+  background: #0096FF;
+  display: inline-block;
+  white-space: normal;
+}
+
+.sidebar img.logo{
+  flex: 1;
+}
+
+.sidebar a {
+  flex: 1;
+  float: left;
+  color:aqua;
+  text-align: center;
+  padding: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
+  display: inline-block;
+}
+
+.sidebar a:hover {
+  color: mediumaquamarine;
+}
+
+.sidebar b {
+  flex: 1;
+  float: right;
+  color:aqua;
+  text-align: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-right: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.sidebar b:hover {
+  color: mediumaquamarine;
+}
+
+.leftbar {
+  width: 15%;
+  margin: 2vh;
+  height: max(80vh, 750px);
+
+  overflow: hidden;
+  background: #4B77BE;
+  border-radius: 20px;
+}
