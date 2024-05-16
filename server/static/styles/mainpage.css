@@ -5,69 +5,83 @@ padding:0;
 
 html {
   font-size: 12px;
-  font-family: "Open Sans", sans-serif; /* this should be the rest of the output you got from Google Fonts */
-  background-color: #152238;
+  font-family: "Arial", sans-serif; /* this should be the rest of the output you got from Google Fonts */
+  background-color: #e1e1e1;
 }
 
 .sidebarcontainer {
-  white-space:nowrap;
+  white-space: nowrap;
 }
 
-.sidebar{
-  padding-top: 15px;
-  padding-bottom: 15px;
+.topbar {
+  padding-top: 5px;
+  padding-bottom: 5px;
   padding-left: 30px;
   text-align: left;
-  font-size: 25px;
+  font-size: 30px;
   width: max(100vw, 1600px);
-  height: 15%;
-  background: #0096FF;
+  background: #1c59dc;
   display: inline-block;
   white-space: normal;
 }
 
-.sidebar img.logo{
-  flex: 1;
-}
-
-.sidebar a {
+.topbar b {
   flex: 1;
   float: left;
-  color:aqua;
+  color:#e1e1e1;
   text-align: center;
-  padding: 15px;
-  margin-left: 20px;
-  margin-right: 20px;
+  padding: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
   display: inline-block;
 }
 
-.sidebar a:hover {
-  color: mediumaquamarine;
+.outer {
+  position: relative;
+  width: max(100%, 1920px);
 }
 
-.sidebar b {
-  flex: 1;
-  float: right;
-  color:aqua;
-  text-align: center;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-right: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
-  display: inline-block;
+.do_not_wrap {
+  position: absolute;
+  width: max(100%, 1920px);
 }
 
-.sidebar b:hover {
-  color: mediumaquamarine;
-}
-
-.leftbar {
-  width: 15%;
-  margin: 2vh;
-  height: max(80vh, 750px);
-
-  overflow: hidden;
-  background: #4B77BE;
+.camera_display {
+  width: max(40%, 850px);
+  margin: 10px 10px 10px 10px;
+  height: max(50%, 625px);
+  background: #f6f6f6;
   border-radius: 20px;
+  float: left;
+
+  padding: 15px;
+  font-size: 30px;
+  color:black;
+  display:inline;
+}
+
+.camera_display img {
+  display: block;
+  margin: 15px auto;
+  height: 70%;
+}
+
+.camera_display p {
+  text-align: center;
+  font-size: 14px;
+}
+
+.pipeline_editor {
+  width: max(50%, 750px);
+  height: max(50%, 625px);
+  background: #f6f6f6;
+  border-radius: 20px;
+
+  margin: 10px 10px 10px 10px;
+  padding: 15px;
+  font-size: 30px;
+  color:black;
+
+  float: right;
+  display: inline;
 }

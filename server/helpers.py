@@ -19,7 +19,9 @@ class Circular_Array:
         self.added = self.added + 1
 
     def get_average(self):
-        if self.added < self.N:
+        if self.added == 0:
+            return 0
+        elif self.added < self.N:
             return sum(self.arr[:self.added]) / float(self.arr[:self.added].size)
         else:
             return sum(self.arr) / float(self.arr.size)

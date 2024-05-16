@@ -89,6 +89,8 @@ class NeuralPipeline(Pipeline):
 
     def process_frame(self, img):
         self.sem.acquire()
+        
+        start = time.time()
 
         img_data = self.preprocess(img)
 
@@ -102,6 +104,8 @@ class NeuralPipeline(Pipeline):
         boxes = np.squeeze(boxes)
 
         img = self.postprocess(img, confidences, boxes)
+        
+        self.loop_times.add(time.time() - start)
 
         self.sem.release()
 

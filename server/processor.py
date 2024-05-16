@@ -20,3 +20,6 @@ def process_image(img):
                 processors[i].process_frame(img.copy())
 
     return res
+
+def get_loop_times():
+    return processors[return_idx].get_average_loop_time()

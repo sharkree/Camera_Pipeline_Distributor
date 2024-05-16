@@ -1,3 +1,4 @@
+import time
 from ast import literal_eval
 
 import cv2
@@ -20,18 +21,30 @@ def image(data_image):
 
     binaryImageData = base64.b64decode(data_image)
     imageStream = BytesIO(binaryImageData)
-    pimg = Image.open(imageStream)
 
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+    try:
+        with Image.open(imageStream) as pimg:
+            frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
 
-    frame = processor.process_image(frame)
+            frame = processor.process_image(frame)
 
-    imgencode = cv2.imencode('.jpg', frame)[1]
+            imgencode = cv2.imencode('.jpg', frame)[1]
 
-    stringData = base64.b64encode(imgencode).decode('utf-8')
-    b64_src = 'data:image/jpg;base64,'
-    stringData = b64_src + stringData
-    emit('response_back', stringData)
+            stringData = base64.b64encode(imgencode).decode('utf-8')
+            b64_src = 'data:image/jpg;base64,'
+            stringData = b64_src + stringData
+            emit('response_back', stringData)
+
+            pass
+    except IOError:
+        time.sleep(0.05)
+        print("An error occurred while trying to open the image.")
+        
+
+@socketio.on('get_loop')
+def get_loop():
+    emit('loop', processor.get_loop_times())
+
 
 
 # str contains the json of all the stuff that changed
@@ -41,7 +54,7 @@ def change_processing(json_str):
 
     for key, value in data.items():
         if key == 'return_idx':
-            return_idx = value
+            processor.return_idx = value
             continue
 
         if key == 'pipelines':
@@ -78,7 +91,7 @@ def change_processing(json_str):
 @app.route("/")
 @app.route("/home")
 def index():
-    return render_template("webpage.html")
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

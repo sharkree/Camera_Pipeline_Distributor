@@ -4,18 +4,43 @@
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Capture</title>
+    <title>BlueBeacon Dashboard</title>
 </head>
-<body>
-    <video id="video" width="640" height="480" autoplay style="display: none;"></video>
-    <canvas id="canvas" style="display: none;"></canvas>
-    <div class = 'video'>
-        <img id="image">
+<header>
+    <div class="sidebarcontainer">
+        <div class="topbar">
+            <b>BlueBeacon Dashboard</b>
+        </div>
     </div>
+</header>
 
-    <div>
-        <input id="confidence_slider" type="range" min="0" max="1" step="0.01" value="0.5">
-        <output id="confidence_output"></output>
+<body>
+    <div class="outer">
+        <div class="do_not_wrap">
+            <div class="camera_display">
+                <a>Camera Stream</a>
+                <br>
+
+                <div>
+                    <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    <div class = 'video'>
+                        <img id="image">
+                    </div>
+                </div>
+
+                <p id="loop">Average Loop Time of Current Pipeline: N/A</p>
+            </div>
+
+            <div class="pipeline_editor">
+                <a>Pipeline Editor</a>
+                <br>
+
+                <div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -44,6 +69,10 @@
             base64Image = canvas.toDataURL('image/jpg');
             base64Image = base64Image.replace('data:image/png;base64,', '')
             socket.emit('image', base64Image);
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         }
 
         // Automatically capture and encode image at 15 fps
@@ -52,27 +81,20 @@
         socket.on('response_back', function(image){
             const image_id = document.getElementById('image');
             image_id.src = image;
-
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         });
     </script>
 
     <script>
-        var slider = document.getElementById("confidence_slider");
-        var output = document.getElementById("confidence_output");
+        var intervalId = setInterval(function() {
+            socket.emit('get_loop')
+        }, 1000);
 
-        // Update the current slider value (each time you drag the slider handle)
-        slider.oninput = function() {
-            var dict1 = {}; dict1['confidence'] = this.value;
-            var dict2 = {}; dict2['1'] = dict1;
-            var dict3 = {}; dict3['pipelines'] = dict2;
+        const loop = document.getElementById("loop");
 
-            output.innerHTML = slider.value; // Display the default slider value
-
-            socket.emit('change_processing', JSON.stringify(dict3));
-        }
+        socket.on('loop', function(number) {
+            loop.innerHTML = "Average Loop Time of Current Pipeline: " + parseFloat((number * 1000).toPrecision(3)) + "ms";
+        })
     </script>
 </body>
+
 </html>
